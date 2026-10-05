@@ -1,78 +1,124 @@
 # Báo cáo Day 19 — Flat RAG vs GraphRAG
 
-**Họ tên:** …  **MSSV:** …  **Ngày:** …
+**Họ tên:** Nguyễn Văn Huy  **MSSV:** 2A202602428  **Ngày:** 2026-10-05
 
-> Kỳ vọng và thang điểm: `SUBMISSION.md`. Mọi số liệu phải khớp với `ket_qua_benchmark_kg.txt`. Bản thiết kế ontology nộp riêng ở `report/ONTOLOGY.md`.
+Nguồn: `ket_qua_benchmark_kg.txt`, sinh nguyên trạng bằng `python bench_kg.py --judge`. Chat openai:gpt-4o-mini; embedding openai:text-embedding-3-small; top-k=3, chunk size=800, 176 chunks; graph **205 node / 385 cạnh** từ 18 Điều và 20 bài. Dùng ontology gợi ý, không xét bonus.
 
 ## 1. Chi phí (10 điểm)
 
-Dán 2 bảng `Indexing` và `Querying` từ `ket_qua_benchmark_kg.txt`:
+```text
+== Indexing (one-off)
+pipeline  calls    in_tok  out_tok       USD  seconds
+flat        176     56072        0   0.00112     37.9
+graph       196     91958     4899   0.00944     97.4
 
-```
-(dán vào đây)
+== Querying (mean per question)
+pipeline  recall  judge   in_tok  out_tok       USD  seconds
+flat        0.43   1.00      694       47   0.00013     1.46
+graph       0.78   1.67     4447       73   0.00070     1.71
 ```
 
 | Chỉ số | Flat | Graph | Graph / Flat |
-| --- | --- | --- | --- |
-| Indexing USD | | | ×… |
-| Indexing giây | | | ×… |
-| Mỗi câu: USD | | | ×… |
-| Mỗi câu: giây | | | ×… |
-| Mỗi câu: in_tok | | | ×… |
+| --- | ---: | ---: | ---: |
+| Indexing USD | 0.00112 | 0.00944 | 8.43× |
+| Indexing giây | 37.9 | 97.4 | 2.57× |
+| Mỗi câu: USD | 0.00013 | 0.00070 | 5.38× |
+| Mỗi câu: giây | 1.46 | 1.71 | 1.17× |
+| Mỗi câu: in_tok | 694 | 4447 | 6.41× |
 
-**Chi phí tăng thêm đến từ đâu?** (2–3 câu)
-> …
+Tỷ lệ dùng số đã làm tròn trong output. Graph indexing gồm vector index dùng chung và 20 lời gọi trích tin, tăng khoảng $0.00832. Prompt graph chứa thêm facts và toàn văn khoản nên hỏi đáp đắt hơn. USD là ước tính theo bảng code, không phải hóa đơn; chi phí judge được đo riêng, không nằm trong hai bảng pipeline. Giây là thời gian API được metered, không phải toàn bộ wall-clock Neo4j/Python.
+
+Với N câu: Flat ≈ $0.00112 + N×$0.00013; Graph ≈ $0.00944 + N×$0.00070. Không có điểm hòa vốn về tiền trong lần đo này vì cả hai thành phần của Graph đều cao hơn; cần cân nhắc lợi ích chất lượng.
 
 ## 2. Từng câu hỏi (10 điểm)
 
-| Câu | Loại | Flat recall / judge | Graph recall / judge | Thắng | Vì sao (1 câu) |
+Judge có thang 0 sai, 1 một phần, 2 đúng.
+
+| Câu | Loại | Flat recall / judge | Graph recall / judge | Thắng | Vì sao |
 | --- | --- | --- | --- | --- | --- |
-| Q1 | single-hop-law | | | | |
-| Q2 | single-hop-news | | | | |
-| Q3 | cross-kb | | | | |
-| Q4 | cross-kb | | | | |
-| Q5 | cross-kb-multi-hop | | | | |
-| Q6 | aggregation | | | | |
+| Q1 | single-hop-law | 1.00 / 2 | 1.00 / 2 | Hòa chất lượng | Đều đúng định nghĩa tiền chất; Graph thêm Điều 2 khoản 4. |
+| Q2 | single-hop-news | 1.00 / 2 | 1.00 / 2 | Hòa chất lượng | Đều nêu đúng Trần Thanh Tuấn và Trần Minh Tâm. |
+| Q3 | cross-kb | 0.00 / 0 | 1.00 / 2 | Graph | Nối được 36 tháng tù với Điều 251, khoản 1; Flat không đủ thông tin. |
+| Q4 | cross-kb | 0.00 / 0 | 0.67 / 1 | Graph một phần | Đúng hành vi và Điều, nhưng sai khung tối đa thành 07 năm. |
+| Q5 | cross-kb-multi-hop | 0.60 / 1 | 1.00 / 2 | Graph | Nêu Điều 250 khoản 4; Flat chỉ ghi “khoản b)” và thiếu số Điều. |
+| Q6 | aggregation | 0.00 / 1 | 0.00 / 1 | Không bên nào đủ | Các mô tả liên quan MDMA nhưng thiếu tên chuẩn và chưa thể hiện đủ vụ theo gold. |
+
+Đã đọc cả 12 câu trả lời Per question. Recall chỉ đối sánh từ khóa: Q6 có nội dung liên quan nhưng dùng tên viết tắt/mô tả khác nên recall bằng 0. Judge=1 không chứng minh danh sách đủ hoặc mọi chi tiết đúng.
 
 ## 3. Phân tích lỗi (20 điểm)
 
-Chọn ít nhất 2 nhóm lỗi trong E1–E6 (`LAB_GUIDE.md` Bước 8.4). Sao chép khung dưới đây cho mỗi lỗi.
+Cypher và kết quả thật lưu trong [kg_evidence.json](kg_evidence.json). Tái lấy bằng `python scripts/inspect_kg.py` (chỉ đọc graph). `contexts_without_vector` dùng doc_ids rỗng để cô lập graph retrieval, không phải toàn bộ prompt đã dùng trong benchmark.
 
-### Lỗi E…: <tên>
+### Lỗi E2: Sai khung tối đa dù graph có khoản luật
 
-- **Hiện tượng:** …
-- **Bằng chứng:** (câu trả lời trích từ file kết quả, hoặc Cypher và kết quả)
+- **Hiện tượng:** Q4 Graph trả tối đa 07 năm, recall=0.67, judge=1; corpus có khoản 4 Điều 255 nêu 20 năm hoặc tù chung thân.
+- **Bằng chứng:** nguyên văn Q4 Graph:
+
+> Giang hồ 'Hoàng Nato' bị bắt về hành vi tổ chức sử dụng trái phép chất ma túy. Hành vi này có thể bị phạt tù tối đa 07 năm theo Điều 255 Bộ luật Hình sự.
 
 ```cypher
-…
+MATCH (a:Article)-[:HAS_CLAUSE]->(cl:Clause)
+WHERE a.doc_id = 'blhs-dieu-255'
+RETURN a.id AS article, cl.number AS number, cl.penalty AS penalty, cl.text AS text
+ORDER BY number;
 ```
 
-```
-kết quả
+Kết quả snapshot: khoản 1 `phạt tù từ 02 năm đến 07 năm`; khoản 2 `phạt tù từ 07 năm đến 15 năm`; khoản 3 `phạt tù từ 15 năm đến 20 năm`; khoản 4 `phạt tù 20 năm hoặc tù chung thân`; khoản 5 hình phạt bổ sung. Khoản 4 thực sự có trong graph. Tái gọi `context(question_Q4, [])` trả khoản 1 Điều 255 nhưng không có khoản 4 (xem `contexts_without_vector.Q4`).
+
+- **Nguyên nhân:** KG-3 lọc khoản 1 hoặc khoản MENTIONS chất của vụ. Các khoản tăng nặng Điều 255 không nhắc chất cụ thể nên bị loại; LLM dùng trần khung cơ bản để trả khung tối đa. Snapshot không lưu chính xác prompt benchmark, nhưng điều kiện Cypher và tái truy xuất xác nhận cơ chế thiếu luật.
+- **Đề xuất sửa:** trong `src/graph.py`, khi hỏi tối đa/khung cao nhất, lấy mọi khoản hình phạt của Điều liên quan; hoặc mô hình hóa ngưỡng phạt số và cờ chung thân/tử hình. Đánh đổi: tăng token hoặc thêm công việc parsing và kiểm tra ngoại lệ. Phải benchmark lại sau sửa. Chưa sửa code trong lượt phân tích để giữ số liệu khớp code đã đo.
+
+### Lỗi E3: Một loại chất tạo thành nhiều node
+
+- **Hiện tượng:** tồn tại hai biến thể chữ hoa/thường của cùng loại chất.
+- **Bằng chứng:**
+
+```cypher
+MATCH (s:Substance)
+WITH toLower(s.name) AS normalized, collect(s.name) AS names, count(*) AS n
+WHERE n > 1
+RETURN normalized, names, n ORDER BY normalized;
 ```
 
-- **Nguyên nhân:** …
-- **Đề xuất sửa:** …
+```text
+ketamine        ['Ketamine', 'ketamine']                  n=2
+methamphetamine ['methamphetamine', 'Methamphetamine']  n=2
+```
+
+- **Nguyên nhân:** Substance dùng khóa name; luật dùng danh sách chuẩn, nhưng helper tin chỉ nhắc tên chuẩn trong prompt, không linking tên chất sau LLM. MERGE/constraint không gộp hai chuỗi khác nhau. Lỗi thuộc chuẩn hóa và khóa định danh KG-2/ontology.
+- **Đề xuất sửa:** canonical hóa chất trước `add_news_case` hoặc thêm khóa chuẩn hóa và aliases riêng; dùng normalizer dành cho chất với bảng alias. Không gộp tên chung “ma túy” vào một chất cụ thể. Chuẩn hóa chữ hoa ít chi phí; fuzzy/alias cần tránh nối sai. Dựng lại graph, chạy truy vấn trùng và benchmark trước/sau.
+
+### Quan sát bổ sung
+
+Một Case không có CHARGED_WITH: `Vụ tông cảnh sát giao thông ở An Giang`, doc_id `news-100260926112415229`. Chưa coi là E1 chắc chắn vì tội của vụ có thể ngoài corpus ma túy. Charge rỗng ở cán bộ/người liên quan cũng không tự động là lỗi.
+
+Q6 có năm node Case nối MDMA: vụ Lê Minh Thành, Sầm Sơn, Viện Pháp y tâm thần và hai tên vụ của Cái Quang Huy. Câu trả lời Graph chỉ có ba mô tả. Cần phân giải vụ trước khi coi số node là số vụ ngoài đời; không suy rằng cả năm node đều là vụ độc lập.
 
 ## 4. Kết luận (5 điểm)
 
-Khi nào nên dùng KG, khi nào Flat RAG là đủ? Dẫn số liệu ở mục 1–2.
-> …
+KG có ích với câu nối tin và luật: Q3 từ recall 0/judge 0 lên 1/2, Q5 từ 0.60/1 lên 1/2. Q1–Q2 chỉ cần một nguồn nên Flat đạt cùng chất lượng với chi phí thấp hơn. Q4 vẫn sai khung tối đa và Q6 vẫn recall 0/judge 1; thêm graph không bảo đảm trả đúng. Cân nhắc KG khi chất lượng nối nguồn bù được chi phí dựng 8.43× và mỗi câu 5.38×, cùng công việc kiểm soát chuẩn hóa/truy xuất. Một lần chạy sáu câu với một judge LLM chưa đủ khái quát sang mọi dữ liệu.
 
 ## 5. Tự kiểm (5 điểm)
 
-```
-$ pytest tests/ -q
-(dán output)
+Output lượt KG-3/KG-4 trước benchmark, xem KG_MULTIHOP_REVIEW.md:
 
+```text
+$ python -m pytest tests/ -q
+48 passed in 0.22s
 $ python bench_kg.py --check
-(dán output)
+[OK] Dữ liệu: 18 điều luật, 20 bài báo
+[OK] KG-1 link_entity
+[OK] Neo4j kết nối được
+[OK] KG-2 build_graph: 148 node / 293 cạnh, đường xuyên 2 KB dài 2 cạnh
+[OK] KG-3 context: 22 dữ kiện, có Điều 251
+[OK] KG-4 GraphRAGAgent.answer
+[OK] Chi phí check: 1 lần gọi LLM, $0.00078.
 ```
 
-Ảnh Neo4j: `report/img/kg_count.png`, `report/img/kg_cross_kb.png`, `report/img/kg_my_case.png`.
-Người đã chọn cho `kg_my_case.png`: …
+Không chạy lại --check sau benchmark vì lệnh reset graph nhỏ. Snapshot graph đầy đủ tổng 205 node và 385 cạnh, khớp benchmark.
+
+**Ảnh chưa hoàn thành:** `report/img/kg_count.png`, `kg_cross_kb.png`, `kg_my_case.png` chưa được tạo. Người chọn **Cái Quang Huy**, snapshot xác nhận đường tới Điều 250. Xem [NEO4J_SCREENSHOTS.md](NEO4J_SCREENSHOTS.md) để chạy truy vấn và chụp.
 
 ## Vấn đề gặp phải (không tính điểm)
 
-Lỗi chưa giải quyết được: lệnh đã chạy, toàn bộ thông báo lỗi, những gì đã thử.
-> …
+`cua.getState()` trả `{"apps":[],"browsers":[]}`; không có browser để chạy :clear và chụp ảnh đúng quy cách. Không dùng ảnh mẫu hay ảnh mô phỏng. Cần kết nối browser Neo4j hoặc chụp thủ công để hoàn thành mục ảnh.
