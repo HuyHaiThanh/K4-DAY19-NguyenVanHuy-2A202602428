@@ -64,7 +64,7 @@
       },
       {
         "label": "Person",
-        "n": 37
+        "n": 34
       },
       {
         "label": "Article",
@@ -72,11 +72,11 @@
       },
       {
         "label": "Substance",
-        "n": 16
+        "n": 17
       },
       {
         "label": "Case",
-        "n": 15
+        "n": 14
       },
       {
         "label": "Crime",
@@ -84,7 +84,7 @@
       },
       {
         "label": "Location",
-        "n": 7
+        "n": 6
       }
     ]
   },
@@ -101,7 +101,7 @@
       },
       {
         "type": "INVOLVED_IN",
-        "n": 45
+        "n": 42
       },
       {
         "type": "INVOLVES",
@@ -109,11 +109,11 @@
       },
       {
         "type": "CHARGED_WITH",
-        "n": 20
+        "n": 19
       },
       {
         "type": "LOCATED_IN",
-        "n": 14
+        "n": 13
       },
       {
         "type": "DEFINES",
@@ -123,13 +123,7 @@
   },
   "broken_bridges": {
     "cypher": "MATCH (k:Case) WHERE NOT (k)-[:CHARGED_WITH]->() RETURN k.name AS name, k.doc_id AS doc_id, k.summary AS summary",
-    "rows": [
-      {
-        "name": "Vụ tông cảnh sát giao thông ở An Giang",
-        "doc_id": "news-100260926112415229",
-        "summary": "Nguyễn Minh Nhân đã tông vào Thiếu tá Trần Ngọc Nam trong khi chạy xe không có giấy phép lái xe và sử dụng rượu, ma túy."
-      }
-    ]
+    "rows": []
   },
   "substances": {
     "cypher": "MATCH (s:Substance) RETURN s.name AS name ORDER BY toLower(s.name)",
@@ -165,6 +159,9 @@
         "name": "ma túy"
       },
       {
+        "name": "ma túy tổng hợp"
+      },
+      {
         "name": "MDMA"
       },
       {
@@ -189,45 +186,39 @@
     "rows": [
       {
         "person": "Nguyễn Thị Thu Hoài",
-        "role": "người liên quan",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "doc_id": "news-100260924105118645"
-      },
-      {
-        "person": "Nguyễn Văn Quang",
-        "role": "người liên quan",
+        "role": "cán bộ",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
         "doc_id": "news-100260924105118645"
       },
       {
         "person": "Trần Văn Trường",
-        "role": "người liên quan",
+        "role": "bị cáo",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
         "doc_id": "news-100260924105118645"
       },
       {
-        "person": "Dương Văn Biết",
-        "role": "người liên quan",
+        "person": "Lê Văn Đông",
+        "role": "bị cáo",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
         "doc_id": "news-100260924105118645"
       },
       {
-        "person": "Dương Văn Lương",
-        "role": "người liên quan",
+        "person": "Ngô Văn Vinh",
+        "role": "bị cáo",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
         "doc_id": "news-100260924105118645"
       },
       {
-        "person": "Nguyễn Minh Nhân",
-        "role": "bị can",
-        "case_name": "Vụ tông cảnh sát giao thông ở An Giang",
-        "doc_id": "news-100260926112415229"
-      },
-      {
-        "person": "Trần Ngọc Nam",
+        "person": "Nguyễn Văn Quang",
         "role": "cán bộ",
-        "case_name": "Vụ tông cảnh sát giao thông ở An Giang",
-        "doc_id": "news-100260926112415229"
+        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
+        "doc_id": "news-100260924105118645"
+      },
+      {
+        "person": "Ngô Việt Dũng",
+        "role": "người liên quan",
+        "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
+        "doc_id": "news-100260930085028036"
       },
       {
         "person": "Cao Thị Bích Hằng",
@@ -237,12 +228,6 @@
       },
       {
         "person": "Trần Quốc An",
-        "role": "người liên quan",
-        "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
-        "doc_id": "news-100260930085028036"
-      },
-      {
-        "person": "Ngô Việt Dũng",
         "role": "người liên quan",
         "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
         "doc_id": "news-100260930085028036"
@@ -291,14 +276,8 @@
       {
         "person": "Bùi Thị Thanh Thủy",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Bùi Thị Thanh Thủy",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Cao Thị Bích Hằng",
@@ -327,14 +306,8 @@
       {
         "person": "DJ Thái Hoàng",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "DJ Thái Hoàng",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Dương Minh Tuấn",
@@ -375,30 +348,6 @@
       {
         "person": "Dương Minh Tuấn",
         "case_name": "Vụ bắt giang hồ 'Hoàng Nato' và 126 người liên quan 8 đường dây ma túy",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
-      },
-      {
-        "person": "Dương Văn Biết",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Dương Văn Biết",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
-      },
-      {
-        "person": "Dương Văn Lương",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Dương Văn Lương",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
         "crime": "tổ chức sử dụng trái phép chất ma túy",
         "article": "Điều 255 BLHS"
       },
@@ -458,12 +407,6 @@
       },
       {
         "person": "Lê Văn Đông",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Lê Văn Đông",
         "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
         "crime": "tổ chức sử dụng trái phép chất ma túy",
         "article": "Điều 255 BLHS"
@@ -471,8 +414,8 @@
       {
         "person": "Lê Văn Đông",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Lê Đăng Khoa",
@@ -530,12 +473,6 @@
       },
       {
         "person": "Nguyễn Thị Mai Anh",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Nguyễn Thị Mai Anh",
         "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
         "crime": "tổ chức sử dụng trái phép chất ma túy",
         "article": "Điều 255 BLHS"
@@ -543,20 +480,14 @@
       {
         "person": "Nguyễn Thị Mai Anh",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Nguyễn Thị Thu Hoài",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Nguyễn Thị Thu Hoài",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Nguyễn Tiến Đạt",
@@ -567,14 +498,8 @@
       {
         "person": "Nguyễn Văn Quang",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Nguyễn Văn Quang",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Ngô Việt Dũng",
@@ -587,6 +512,12 @@
         "case_name": "Vụ tổ chức sử dụng ma túy tại Sầm Sơn",
         "crime": "tổ chức sử dụng trái phép chất ma túy",
         "article": "Điều 255 BLHS"
+      },
+      {
+        "person": "Ngô Văn Vinh",
+        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Phan Kim Nhi",
@@ -717,14 +648,8 @@
       {
         "person": "Trần Văn Trường",
         "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "mua bán trái phép chất ma túy",
-        "article": "Điều 251 BLHS"
-      },
-      {
-        "person": "Trần Văn Trường",
-        "case_name": "Vụ án tại Viện Pháp y tâm thần Trung ương",
-        "crime": "tổ chức sử dụng trái phép chất ma túy",
-        "article": "Điều 255 BLHS"
+        "crime": "vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần",
+        "article": "Điều 259 BLHS"
       },
       {
         "person": "Trịnh Vũ Kiên",
@@ -776,10 +701,8 @@
       "[Điều 255 BLHS - Tội tổ chức sử dụng trái phép chất ma túy] khoản 1: 1. Người nào tổ chức sử dụng trái phép chất ma túy dưới bất kỳ hình thức nào, thì bị phạt tù từ 02 năm đến 07 năm.",
       "Vụ việc 'Chuyên án A3-626P': Bộ đội Biên phòng đã triệt phá chuyên án A3-626P, bắt giữ 2 đối tượng và thu giữ 40kg ma túy.",
       "Vụ việc 'Vụ mua bán hơn 36kg ma túy tại TP.HCM': Hai bị cáo Trần Thanh Tuấn và Trần Minh Tâm bị tuyên án tử hình về tội mua bán trái phép chất ma túy. Bốn bị cáo khác nhận án tù từ 2 năm 6 tháng đến 8 năm 6 tháng.",
-      "Vụ việc 'Vụ tông cảnh sát giao thông ở An Giang': Nguyễn Minh Nhân đã tông vào Thiếu tá Trần Ngọc Nam trong khi chạy xe không có giấy phép lái xe và sử dụng rượu, ma túy.",
       "(Case: Chuyên án A3-626P) -[INVOLVES {amount: 40kg}]-> (Substance: ma túy)",
-      "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)",
-      "(Case: Vụ tông cảnh sát giao thông ở An Giang) -[INVOLVES]-> (Substance: ma túy)"
+      "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)"
     ],
     "Q2": [
       "[Điều 249 BLHS - Tội tàng trữ trái phép chất ma túy] khoản 1: 1. Người nào tàng trữ trái phép chất ma túy mà không nhằm mục đích mua bán, vận chuyển, sản xuất trái phép chất ma túy thuộc một trong các trường hợp sau đây, thì bị phạt tù từ 01 năm đến 05 năm:\n\na) Đã bị xử phạt vi phạm hành chính về hành vi quy định tại Điều này hoặc đã bị kết án về tội này hoặc một trong các tội quy định tại các điều 248, 250, 251 và 252 của Bộ luật này, chưa được xóa án tích mà còn vi phạm;\n\nb) Nhựa thuốc phiện, nhựa cần sa hoặc cao côca có khối lượng từ 01 gam đến dưới 500 gam;\n\nc) Heroine, Cocaine, Methamphetamine, Amphetamine, MDMA hoặc XLR-11 có khối lượng từ 0,1 gam đến dưới 05 gam;\n\nd) Lá cây côca; lá khát (lá cây Catha edulis); lá, rễ, thân, cành, hoa, quả của cây cần sa hoặc bộ phận của cây khác có chứa chất ma túy do Chính phủ quy định có khối lượng từ 01 kilôgam đến dưới 10 kilôgam;\n\nđ) Quả thuốc phiện khô có khối lượng từ 05 kilôgam đến dưới 50 kilôgam;\n\ne) Quả thuốc phiện tươi có khối lượng từ 01 kilôgam đến dưới 10 kilôgam;\n\ng) Các chất ma túy khác ở thể rắn có khối lượng từ 01 gam đến dưới 20 gam;\n\nh) Các chất ma túy khác ở thể lỏng có thể tích từ 10 mililít đến dưới 100 mililít;\n\ni) Có 02 chất ma túy trở lên mà tổng khối lượng hoặc thể tích của các chất đó tương đương với khối lượng hoặc thể tích chất ma túy quy định tại một trong các điểm từ điểm b đến điểm h khoản này.",
@@ -790,7 +713,6 @@
       "Vụ việc 'Vụ mua bán hơn 36kg ma túy tại TP.HCM': Hai bị cáo Trần Thanh Tuấn và Trần Minh Tâm bị tuyên án tử hình về tội mua bán trái phép chất ma túy. Bốn bị cáo khác nhận án tù từ 2 năm 6 tháng đến 8 năm 6 tháng.",
       "Vụ việc 'Vụ sử dụng ma túy etomidate của Hoàng Nato và Phan Kim Nhi': Hoàng Nato và TikToker Phannhibeauty khai nhận đã cùng nhau sử dụng ma túy etomidate ngụy trang trong thuốc lá điện tử. Cả hai bị bắt giữ sau khi tổ chức sử dụng ma túy.",
       "Vụ việc 'Vụ triệt phá 8 đường dây ma túy tại TP.HCM': Công an TP.HCM đã triệt phá 8 đường dây ma túy và bắt giữ 126 người liên quan, trong đó có 'Hoàng Nato' và bạn gái Phan Kim Nhi. Các đối tượng này bị phát hiện sử dụng ma túy etomidate ngụy trang trong thuốc lá điện tử.",
-      "Vụ việc 'Vụ tông cảnh sát giao thông ở An Giang': Nguyễn Minh Nhân đã tông vào Thiếu tá Trần Ngọc Nam trong khi chạy xe không có giấy phép lái xe và sử dụng rượu, ma túy.",
       "Vụ việc 'Vụ tổ chức sử dụng trái phép chất ma túy liên quan đến TikToker Phannhibeauty': TikToker Phannhibeauty cùng 126 người khác bị bắt vì liên quan đến tổ chức sử dụng trái phép chất ma túy. Trong số đó có giang hồ 'Hoàng Nato'.",
       "(Case: Chuyên án A3-626P) -[LOCATED_IN]-> (Location: TP.HCM)",
       "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[LOCATED_IN]-> (Location: TP.HCM)",
@@ -799,8 +721,7 @@
       "(Case: Vụ tổ chức sử dụng trái phép chất ma túy liên quan đến TikToker Phannhibeauty) -[LOCATED_IN]-> (Location: TP.HCM)",
       "(Case: Vụ bắt giang hồ 'Hoàng Nato' và 126 người liên quan 8 đường dây ma túy) -[LOCATED_IN]-> (Location: TP.HCM)",
       "(Case: Chuyên án A3-626P) -[INVOLVES {amount: 40kg}]-> (Substance: ma túy)",
-      "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)",
-      "(Case: Vụ tông cảnh sát giao thông ở An Giang) -[INVOLVES]-> (Substance: ma túy)"
+      "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)"
     ],
     "Q3": [
       "[Điều 251 BLHS - Tội mua bán trái phép chất ma túy] khoản 1: 1. Người nào mua bán trái phép chất ma túy, thì bị phạt tù từ 02 năm đến 07 năm.",
@@ -819,7 +740,7 @@
       "Vụ việc 'Vụ triệt phá 8 đường dây ma túy tại TP.HCM': Công an TP.HCM đã triệt phá 8 đường dây ma túy và bắt giữ 126 người liên quan, trong đó có 'Hoàng Nato' và bạn gái Phan Kim Nhi. Các đối tượng này bị phát hiện sử dụng ma túy etomidate ngụy trang trong thuốc lá điện tử.",
       "Vụ việc 'Vụ tổ chức sử dụng trái phép chất ma túy liên quan đến TikToker Phannhibeauty': TikToker Phannhibeauty cùng 126 người khác bị bắt vì liên quan đến tổ chức sử dụng trái phép chất ma túy. Trong số đó có giang hồ 'Hoàng Nato'.",
       "(Person: Dương Minh Tuấn) -[INVOLVED_IN {role: bị cáo, charge: tổ chức sử dụng trái phép chất ma túy}]-> (Case: Vụ triệt phá 8 đường dây ma túy tại TP.HCM)",
-      "(Person: Dương Minh Tuấn) -[INVOLVED_IN {sentence: chuỗi rỗng, role: bị cáo, charge: tổ chức sử dụng trái phép chất ma túy}]-> (Case: Vụ sử dụng ma túy etomidate của Hoàng Nato và Phan Kim Nhi)",
+      "(Person: Dương Minh Tuấn) -[INVOLVED_IN {role: bị cáo, charge: tổ chức sử dụng trái phép chất ma túy}]-> (Case: Vụ sử dụng ma túy etomidate của Hoàng Nato và Phan Kim Nhi)",
       "(Person: Dương Minh Tuấn) -[INVOLVED_IN {role: bị cáo, charge: tổ chức sử dụng trái phép chất ma túy}]-> (Case: Vụ tổ chức sử dụng trái phép chất ma túy liên quan đến TikToker Phannhibeauty)",
       "(Person: Dương Minh Tuấn) -[INVOLVED_IN {role: bị cáo, charge: tổ chức sử dụng trái phép chất ma túy}]-> (Case: Vụ bắt giang hồ 'Hoàng Nato' và 126 người liên quan 8 đường dây ma túy)"
     ],
@@ -837,19 +758,18 @@
       "[Điều 251 BLHS - Tội mua bán trái phép chất ma túy] khoản 3: 3. Phạm tội thuộc một trong các trường hợp sau đây, thì bị phạt tù từ 15 năm đến 20 năm:\n\na) Nhựa thuốc phiện, nhựa cần sa hoặc cao côca có khối lượng từ 01 kilôgam đến dưới 05 kilôgam;\n\nb) Heroine, Cocaine, Methamphetamine, Amphetamine, MDMA hoặc XLR-11 có khối lượng từ 30 gam đến dưới 100 gam;\n\nc) Lá cây côca; lá khát (lá cây Catha edulis); lá, rễ, thân, cành, hoa, quả của cây cần sa hoặc bộ phận của cây khác có chứa chất ma túy do Chính phủ quy định có khối lượng từ 25 kilôgam đến dưới 75 kilôgam;\n\nd) Quả thuốc phiện khô có khối lượng từ 200 kilôgam đến dưới 600 kilôgam;\n\nđ) Quả thuốc phiện tươi có khối lượng từ 50 kilôgam đến dưới 150 kilôgam;\n\ne) Các chất ma túy khác ở thể rắn có khối lượng từ 100 gam đến dưới 300 gam;\n\ng) Các chất ma túy khác ở thể lỏng có thể tích từ 250 mililít đến dưới 750 mililít;\n\nh) Có 02 chất ma túy trở lên mà tổng khối lượng hoặc thể tích của các chất đó tương đương với khối lượng hoặc thể tích chất ma túy quy định tại một trong các điểm từ điểm a đến điểm g khoản này.",
       "[Điều 251 BLHS - Tội mua bán trái phép chất ma túy] khoản 4: 4. Phạm tội thuộc một trong các trường hợp sau đây, thì bị phạt tù 20 năm, tù chung thân hoặc tử hình:\n\na) Nhựa thuốc phiện, nhựa cần sa hoặc cao côca có khối lượng 05 kilôgam trở lên;\n\nb) Heroine, Cocaine, Methamphetamine, Amphetamine, MDMA hoặc XLR-11 có khối lượng 100 gam trở lên;\n\nc) Lá cây côca; lá khát (lá cây Catha edulis); lá, rễ, thân, cành, hoa, quả của cây cần sa hoặc bộ phận của cây khác có chứa chất ma túy do Chính phủ quy định có khối lượng 75 kilôgam trở lên;\n\nd) Quả thuốc phiện khô có khối lượng 600 kilôgam trở lên;\n\nđ) Quả thuốc phiện tươi có khối lượng 150 kilôgam trở lên;\n\ne) Các chất ma túy khác ở thể rắn có khối lượng 300 gam trở lên;\n\ng) Các chất ma túy khác ở thể lỏng có thể tích 750 mililít trở lên;\n\nh) Có 02 chất ma túy trở lên mà tổng khối lượng hoặc thể tích của các chất đó tương đương với khối lượng hoặc thể tích chất ma túy quy định tại một trong các điểm từ điểm a đến điểm g khoản này.",
       "[Điều 255 BLHS - Tội tổ chức sử dụng trái phép chất ma túy] khoản 1: 1. Người nào tổ chức sử dụng trái phép chất ma túy dưới bất kỳ hình thức nào, thì bị phạt tù từ 02 năm đến 07 năm.",
+      "[Điều 259 BLHS - Tội vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần] khoản 1: 1. Người nào có trách nhiệm trong quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần mà thực hiện một trong các hành vi sau đây, đã bị xử lý kỷ luật hoặc xử phạt vi phạm hành chính về một trong các hành vi quy định tại Điều này hoặc đã bị kết án về một trong các tội quy định tại Chương XX của Bộ luật này, chưa được xóa án tích mà còn vi phạm, thì bị phạt tiền từ 10.000.000 đồng đến 100.000.000 đồng hoặc phạt tù từ 01 năm đến 05 năm:\n\na) Vi phạm quy định về xuất khẩu, nhập khẩu, tạm nhập, tái xuất, quá cảnh chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nb) Vi phạm quy định về nghiên cứu, giám định, sản xuất, bảo quản chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nc) Vi phạm quy định về giao nhận, vận chuyển chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nd) Vi phạm quy định về phân phối, mua bán, trao đổi chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nđ) Vi phạm quy định về quản lý, kiểm soát, lưu giữ chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần tại khu vực cửa khẩu, khu vực biên giới, trên biển;\n\ne) Vi phạm quy định về cấp phát, cho phép sử dụng chất ma túy, thuốc gây nghiện hoặc thuốc hướng thần.",
       "Vụ việc 'Chuyên án A3-626P': Bộ đội Biên phòng đã triệt phá chuyên án A3-626P, bắt giữ 2 đối tượng và thu giữ 40kg ma túy.",
       "Vụ việc 'Vụ góp tiền mua ma túy tại Hà Nội': Ba thanh niên góp tiền để Lê Minh Thành mua ma túy cho tiệc sinh nhật nhưng sau đó không tham gia. Tòa sơ thẩm tuyên phạt mỗi người 24 tháng tù về tội mua bán trái phép chất ma túy.",
       "Vụ việc 'Vụ mua bán hơn 36kg ma túy tại TP.HCM': Hai bị cáo Trần Thanh Tuấn và Trần Minh Tâm bị tuyên án tử hình về tội mua bán trái phép chất ma túy. Bốn bị cáo khác nhận án tù từ 2 năm 6 tháng đến 8 năm 6 tháng.",
-      "Vụ việc 'Vụ tông cảnh sát giao thông ở An Giang': Nguyễn Minh Nhân đã tông vào Thiếu tá Trần Ngọc Nam trong khi chạy xe không có giấy phép lái xe và sử dụng rượu, ma túy.",
       "Vụ việc 'Vụ tổ chức sử dụng ma túy tại Sầm Sơn': Lê Văn Đông, trong thời gian chữa bệnh bắt buộc, đã tổ chức sử dụng ma túy trên bãi biển Sầm Sơn cùng với một số người khác. Đông bị cáo buộc đã trốn viện để thực hiện hành vi này.",
       "Vụ việc 'Vụ vận chuyển ma túy của Cái Quang Huy': Cái Quang Huy bị cáo buộc hai lần vận chuyển ma túy về Việt Nam qua sân bay Nội Bài, tổng số ma túy gồm hơn 9,6kg MDMA và gần 406g Ketamine.",
       "Vụ việc 'Vụ vận chuyển ma túy từ Đức về Việt Nam': Cái Quang Huy bị cáo buộc hai lần vận chuyển ma túy về Việt Nam qua sân bay Nội Bài, tổng khối lượng hơn 9,6kg MDMA và gần 406g Ketamine.",
       "Vụ việc 'Vụ án tại Viện Pháp y tâm thần Trung ương': Vụ án liên quan đến việc 39 bác sĩ, điều dưỡng và nhiều bị cáo thao túng để 'chạy' giám định tâm thần cho những người phạm tội ma túy. Nhiều người đã chi hàng trăm triệu đến hàng tỉ đồng để được chữa bệnh bắt buộc.",
-      "(Person: Cái Quang Huy) -[INVOLVED_IN {role: nghi phạm, charge: vận chuyển trái phép chất ma túy}]-> (Case: Vụ vận chuyển ma túy của Cái Quang Huy)",
+      "(Person: Cái Quang Huy) -[INVOLVED_IN {role: bị cáo, charge: vận chuyển trái phép chất ma túy}]-> (Case: Vụ vận chuyển ma túy của Cái Quang Huy)",
       "(Person: Cái Quang Huy) -[INVOLVED_IN {role: bị cáo, charge: vận chuyển trái phép chất ma túy}]-> (Case: Vụ vận chuyển ma túy từ Đức về Việt Nam)",
       "(Case: Chuyên án A3-626P) -[INVOLVES {amount: 40kg}]-> (Substance: ma túy)",
       "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)",
-      "(Case: Vụ tông cảnh sát giao thông ở An Giang) -[INVOLVES]-> (Substance: ma túy)",
       "(Case: Vụ tổ chức sử dụng ma túy tại Sầm Sơn) -[INVOLVES {amount: 0,686g}]-> (Substance: MDMA)",
       "(Case: Vụ án tại Viện Pháp y tâm thần Trung ương) -[INVOLVES]-> (Substance: MDMA)",
       "(Case: Vụ vận chuyển ma túy của Cái Quang Huy) -[INVOLVES {amount: 9,6kg}]-> (Substance: MDMA)",
@@ -888,17 +808,16 @@
       "[Điều 251 BLHS - Tội mua bán trái phép chất ma túy] khoản 3: 3. Phạm tội thuộc một trong các trường hợp sau đây, thì bị phạt tù từ 15 năm đến 20 năm:\n\na) Nhựa thuốc phiện, nhựa cần sa hoặc cao côca có khối lượng từ 01 kilôgam đến dưới 05 kilôgam;\n\nb) Heroine, Cocaine, Methamphetamine, Amphetamine, MDMA hoặc XLR-11 có khối lượng từ 30 gam đến dưới 100 gam;\n\nc) Lá cây côca; lá khát (lá cây Catha edulis); lá, rễ, thân, cành, hoa, quả của cây cần sa hoặc bộ phận của cây khác có chứa chất ma túy do Chính phủ quy định có khối lượng từ 25 kilôgam đến dưới 75 kilôgam;\n\nd) Quả thuốc phiện khô có khối lượng từ 200 kilôgam đến dưới 600 kilôgam;\n\nđ) Quả thuốc phiện tươi có khối lượng từ 50 kilôgam đến dưới 150 kilôgam;\n\ne) Các chất ma túy khác ở thể rắn có khối lượng từ 100 gam đến dưới 300 gam;\n\ng) Các chất ma túy khác ở thể lỏng có thể tích từ 250 mililít đến dưới 750 mililít;\n\nh) Có 02 chất ma túy trở lên mà tổng khối lượng hoặc thể tích của các chất đó tương đương với khối lượng hoặc thể tích chất ma túy quy định tại một trong các điểm từ điểm a đến điểm g khoản này.",
       "[Điều 251 BLHS - Tội mua bán trái phép chất ma túy] khoản 4: 4. Phạm tội thuộc một trong các trường hợp sau đây, thì bị phạt tù 20 năm, tù chung thân hoặc tử hình:\n\na) Nhựa thuốc phiện, nhựa cần sa hoặc cao côca có khối lượng 05 kilôgam trở lên;\n\nb) Heroine, Cocaine, Methamphetamine, Amphetamine, MDMA hoặc XLR-11 có khối lượng 100 gam trở lên;\n\nc) Lá cây côca; lá khát (lá cây Catha edulis); lá, rễ, thân, cành, hoa, quả của cây cần sa hoặc bộ phận của cây khác có chứa chất ma túy do Chính phủ quy định có khối lượng 75 kilôgam trở lên;\n\nd) Quả thuốc phiện khô có khối lượng 600 kilôgam trở lên;\n\nđ) Quả thuốc phiện tươi có khối lượng 150 kilôgam trở lên;\n\ne) Các chất ma túy khác ở thể rắn có khối lượng 300 gam trở lên;\n\ng) Các chất ma túy khác ở thể lỏng có thể tích 750 mililít trở lên;\n\nh) Có 02 chất ma túy trở lên mà tổng khối lượng hoặc thể tích của các chất đó tương đương với khối lượng hoặc thể tích chất ma túy quy định tại một trong các điểm từ điểm a đến điểm g khoản này.",
       "[Điều 255 BLHS - Tội tổ chức sử dụng trái phép chất ma túy] khoản 1: 1. Người nào tổ chức sử dụng trái phép chất ma túy dưới bất kỳ hình thức nào, thì bị phạt tù từ 02 năm đến 07 năm.",
+      "[Điều 259 BLHS - Tội vi phạm quy định về quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần] khoản 1: 1. Người nào có trách nhiệm trong quản lý chất ma túy, tiền chất, thuốc gây nghiện, thuốc hướng thần mà thực hiện một trong các hành vi sau đây, đã bị xử lý kỷ luật hoặc xử phạt vi phạm hành chính về một trong các hành vi quy định tại Điều này hoặc đã bị kết án về một trong các tội quy định tại Chương XX của Bộ luật này, chưa được xóa án tích mà còn vi phạm, thì bị phạt tiền từ 10.000.000 đồng đến 100.000.000 đồng hoặc phạt tù từ 01 năm đến 05 năm:\n\na) Vi phạm quy định về xuất khẩu, nhập khẩu, tạm nhập, tái xuất, quá cảnh chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nb) Vi phạm quy định về nghiên cứu, giám định, sản xuất, bảo quản chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nc) Vi phạm quy định về giao nhận, vận chuyển chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nd) Vi phạm quy định về phân phối, mua bán, trao đổi chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần;\n\nđ) Vi phạm quy định về quản lý, kiểm soát, lưu giữ chất ma túy, tiền chất, thuốc gây nghiện hoặc thuốc hướng thần tại khu vực cửa khẩu, khu vực biên giới, trên biển;\n\ne) Vi phạm quy định về cấp phát, cho phép sử dụng chất ma túy, thuốc gây nghiện hoặc thuốc hướng thần.",
       "Vụ việc 'Chuyên án A3-626P': Bộ đội Biên phòng đã triệt phá chuyên án A3-626P, bắt giữ 2 đối tượng và thu giữ 40kg ma túy.",
       "Vụ việc 'Vụ góp tiền mua ma túy tại Hà Nội': Ba thanh niên góp tiền để Lê Minh Thành mua ma túy cho tiệc sinh nhật nhưng sau đó không tham gia. Tòa sơ thẩm tuyên phạt mỗi người 24 tháng tù về tội mua bán trái phép chất ma túy.",
       "Vụ việc 'Vụ mua bán hơn 36kg ma túy tại TP.HCM': Hai bị cáo Trần Thanh Tuấn và Trần Minh Tâm bị tuyên án tử hình về tội mua bán trái phép chất ma túy. Bốn bị cáo khác nhận án tù từ 2 năm 6 tháng đến 8 năm 6 tháng.",
-      "Vụ việc 'Vụ tông cảnh sát giao thông ở An Giang': Nguyễn Minh Nhân đã tông vào Thiếu tá Trần Ngọc Nam trong khi chạy xe không có giấy phép lái xe và sử dụng rượu, ma túy.",
       "Vụ việc 'Vụ tổ chức sử dụng ma túy tại Sầm Sơn': Lê Văn Đông, trong thời gian chữa bệnh bắt buộc, đã tổ chức sử dụng ma túy trên bãi biển Sầm Sơn cùng với một số người khác. Đông bị cáo buộc đã trốn viện để thực hiện hành vi này.",
       "Vụ việc 'Vụ vận chuyển ma túy của Cái Quang Huy': Cái Quang Huy bị cáo buộc hai lần vận chuyển ma túy về Việt Nam qua sân bay Nội Bài, tổng số ma túy gồm hơn 9,6kg MDMA và gần 406g Ketamine.",
       "Vụ việc 'Vụ vận chuyển ma túy từ Đức về Việt Nam': Cái Quang Huy bị cáo buộc hai lần vận chuyển ma túy về Việt Nam qua sân bay Nội Bài, tổng khối lượng hơn 9,6kg MDMA và gần 406g Ketamine.",
       "Vụ việc 'Vụ án tại Viện Pháp y tâm thần Trung ương': Vụ án liên quan đến việc 39 bác sĩ, điều dưỡng và nhiều bị cáo thao túng để 'chạy' giám định tâm thần cho những người phạm tội ma túy. Nhiều người đã chi hàng trăm triệu đến hàng tỉ đồng để được chữa bệnh bắt buộc.",
       "(Case: Chuyên án A3-626P) -[INVOLVES {amount: 40kg}]-> (Substance: ma túy)",
       "(Case: Vụ mua bán hơn 36kg ma túy tại TP.HCM) -[INVOLVES {amount: 36kg}]-> (Substance: ma túy)",
-      "(Case: Vụ tông cảnh sát giao thông ở An Giang) -[INVOLVES]-> (Substance: ma túy)",
       "(Case: Vụ tổ chức sử dụng ma túy tại Sầm Sơn) -[INVOLVES {amount: 0,686g}]-> (Substance: MDMA)",
       "(Case: Vụ án tại Viện Pháp y tâm thần Trung ương) -[INVOLVES]-> (Substance: MDMA)",
       "(Case: Vụ vận chuyển ma túy của Cái Quang Huy) -[INVOLVES {amount: 9,6kg}]-> (Substance: MDMA)",

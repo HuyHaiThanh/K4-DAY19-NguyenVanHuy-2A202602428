@@ -2,15 +2,13 @@
 
 **Họ tên:** Nguyễn Văn Huy  **MSSV:** 2A202602428
 
-> Trạng thái mới nhất (2026-10-05): KG-1–KG-4 đã triển khai; toàn bộ 48 test pass và `--check` đủ 7 OK. Xem [KG_MULTIHOP_REVIEW.md](KG_MULTIHOP_REVIEW.md). Các ghi chú chưa triển khai bên dưới ghi nhận thời điểm thiết kế ban đầu; benchmark toàn corpus và báo cáo cuối chưa hoàn thành.
-
-> Cập nhật sau thiết kế (2026-10-05): KG-1/KG-2 đã triển khai và kiểm chứng graph nhỏ trên Neo4j. Xem [KG_BUILD_REVIEW.md](KG_BUILD_REVIEW.md) để biết số liệu, cầu nối đã kiểm tra và lỗi trích xuất đã quan sát. Các ghi chú “chưa triển khai/chưa kiểm chứng” bên dưới mô tả thời điểm lập thiết kế; KG-3/KG-4 và benchmark hỏi đáp vẫn chưa hoàn thành.
+> Trạng thái nộp bài (2026-10-05): KG-1–KG-4 đã triển khai; 48 test pass, `--check` đủ 7 OK và benchmark toàn corpus đã chạy. Kết quả cuối và lỗi thực nghiệm ở [REPORT_KG.md](REPORT_KG.md), schema thực tế được đối chiếu trong `kg_evidence.json`. Ba ảnh Browser và thao tác nộp link còn phụ thuộc kết nối UI.
 
 **Lựa chọn** (đánh dấu một):
 - [x] Dùng ontology gợi ý (có thể chỉnh nhỏ)
 - [ ] Tự thiết kế (xét bonus +15, xem `SUBMISSION.md`)
 
-> Phạm vi: thiết kế trước khi triển khai KG-1–KG-4, dựa trên dữ liệu trong repository và các hàm HINT của `src/graph.py`. Đây là schema dự kiến; chưa khẳng định đã dựng hoặc kiểm chứng graph trên Neo4j. Không xét bonus tự thiết kế.
+> Thiết kế được lập trước khi code, dùng các hàm HINT của `src/graph.py`, sau đó đã dựng và đối chiếu label/relationship trên Neo4j. Không xét bonus tự thiết kế; không cần file benchmark hint riêng vì đây chính là ontology gợi ý.
 
 ## 1. Sơ đồ
 
@@ -78,7 +76,7 @@ Với mỗi câu trong `data/benchmark_kg.json`, ghi đường đi trên graph d
 | Q5 | `(p:Person {name:'Cái Quang Huy'})-[r:INVOLVED_IN]->(k:Case)-[:INVOLVES]->(s:Substance)` và `(k)-[:CHARGED_WITH]->(:Crime)<-[:DEFINES]-(a:Article)-[:HAS_CLAUSE]->(cl:Clause)-[:MENTIONS]->(s)` | Một phần: graph lấy được chất, chuỗi `amount` và văn bản khoản. LLM phải đối chiếu hơn 9,6kg MDMA với ngưỡng 100g tại khoản 4 Điều 250; schema không có phép so sánh ngưỡng số hay bộ suy luận chọn khoản tự động. |
 | Q6 | `(k:Case)-[:INVOLVES]->(:Substance {name:'MDMA'})`; trả vụ khác nhau, mở rộng `(p:Person)-[:INVOLVED_IN]->(k)` nếu cần tên người | Có điều kiện: quét toàn graph và đủ dữ liệu trích xuất. Top-k chunk, giới hạn facts hoặc các tên chất không thống nhất có thể bỏ sót vụ; `DISTINCT` không gộp hai tên khác nhau của cùng vụ. |
 
-Các pattern trên là kế hoạch truy vấn, chưa phải kết quả Cypher đã chạy. Khả năng biểu diễn của schema và khả năng truy xuất của KG-3 là hai việc khác nhau; sẽ kiểm chứng cả hai khi dựng graph.
+Các pattern trên mô tả cách tìm dữ liệu cần thiết, không bảo đảm KG-3 hiện tại trả đủ facts cho mọi câu. Đã kiểm tra đường Person → Case → Crime ← Article và chạy Q1–Q6 qua benchmark. Khả năng biểu diễn của schema và khả năng truy xuất là hai việc khác nhau; hạn chế Q4/Q6 được ghi bằng kết quả thực tế trong báo cáo.
 
 ### Đối chiếu dữ liệu đã đọc
 
@@ -110,7 +108,7 @@ Các pattern trên là kế hoạch truy vấn, chưa phải kết quả Cypher 
 
 ## 8. Hạn chế còn lại
 
-- Chưa triển khai KG-1–KG-4, chưa nạp graph hoặc chạy benchmark; không có bằng chứng thực nghiệm về độ chính xác hay chi phí ở bước thiết kế.
+- Đã triển khai và chạy benchmark, nhưng mới đo sáu câu hỏi với một provider; chưa có bằng chứng cải thiện trước–sau để xét bonus. Schema vẫn giữ các hạn chế của baseline.
 - Q1 phụ thuộc lấy văn bản khoản hoặc chunk, vì schema không có node định nghĩa. Q4 cần chủ động lấy khung cao nhất thay vì chỉ khoản 1. Q5 phụ thuộc suy luận văn bản; Q6 cần truy vấn tổng hợp toàn graph.
 - Chuẩn hóa chất mới dựa vào danh sách trong prompt và tìm chuỗi phía luật. Helper không gọi `link_entity` cho chất trong tin, không tự gộp `MDMA`/`mdma`, tên lóng hoặc tên đồng nghĩa.
 - Khóa tên và cập nhật bằng `SET` có thể làm mất nguồn, alias hoặc ghi đè mức án khi gộp dữ liệu. Không lưu lịch sử thay đổi hay độ tin cậy trích xuất.
@@ -121,8 +119,8 @@ Các pattern trên là kế hoạch truy vấn, chưa phải kết quả Cypher 
 
 | Câu hỏi phản biện | Kết luận và việc kiểm chứng tiếp theo |
 | --- | --- |
-| Có khớp code HINT không? | Đã so 7 label, 7 cạnh, khóa và properties với helper; lưu ý `Clause.doc_id` và `Case.source_title` thực sự được ghi dù sơ đồ đầu file không liệt kê hết. Khi KG-2 xong phải đối chiếu label/type/property trên Neo4j. |
+| Có khớp code HINT không? | Đã so 7 label, 7 cạnh, khóa và properties với helper; lưu ý `Clause.doc_id` và `Case.source_title` thực sự được ghi dù sơ đồ đầu file không liệt kê hết. Snapshot Neo4j có đủ 7 label và 7 type, khớp sơ đồ và bảng. |
 | Có hứa trả lời mọi câu chỉ nhờ graph không? | Không. Q1 cần nội dung định nghĩa; Q5 chưa có ngưỡng cấu trúc; Q4/Q6 cần chiến lược truy vấn phù hợp. Phải đọc câu trả lời thực tế, không chỉ dựa vào `--check`. |
 | Vì sao không tự thiết kế để lấy bonus ngay? | Cần baseline và bằng chứng trước–sau để chứng minh cải thiện. Đổi tên label hoặc tuyên bố giảm trùng mà chưa đo không đủ điều kiện bonus. |
-| Có lỗi nào đã chứng minh trên graph chưa? | Chưa. Các điểm trên là hạn chế schema và quan sát corpus, không thay cho hai lỗi thực nghiệm cần nộp ở Bước 8. |
-| Thiết kế xong có nghĩa bài lab xong không? | Không. Tiếp theo là KG-1, KG-2, KG-3, KG-4; sau đó mới kiểm chứng thiết kế, benchmark, ảnh và báo cáo. |
+| Có lỗi nào đã chứng minh trên graph chưa? | Có. Báo cáo ghi E2 bỏ sót khoản luật và E3 trùng tên chất, có câu trả lời/Cypher và kết quả để đối chiếu. |
+| Thiết kế và code xong có nghĩa bài lab xong không? | Không. Checklist code và benchmark đã đạt, nhưng vẫn cần ba ảnh Browser và xác nhận nộp link trên vlearn. |
