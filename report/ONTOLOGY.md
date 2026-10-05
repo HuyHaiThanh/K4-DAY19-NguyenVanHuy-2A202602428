@@ -2,7 +2,7 @@
 
 **Họ tên:** Nguyễn Văn Huy  **MSSV:** 2A202602428
 
-> Trạng thái nộp bài (2026-10-05): KG-1–KG-4 đã triển khai; 48 test pass, `--check` đủ 7 OK và benchmark toàn corpus đã chạy. Kết quả cuối và lỗi thực nghiệm ở [REPORT_KG.md](REPORT_KG.md), schema thực tế được đối chiếu trong `kg_evidence.json`. Ba ảnh Browser và thao tác nộp link còn phụ thuộc kết nối UI.
+> Trạng thái nộp bài (2026-10-05): KG-1–KG-4 đã triển khai; 48 test pass, `--check` đủ 7 OK và benchmark toàn corpus đã chạy. Kết quả cuối, kiểm chứng schema và lỗi thực nghiệm ở [REPORT_KG.md](REPORT_KG.md). Ba ảnh đã có trong `report/img/`; giới hạn quy cách ảnh và trạng thái nộp link được ghi trong báo cáo.
 
 **Lựa chọn** (đánh dấu một):
 - [x] Dùng ontology gợi ý (có thể chỉnh nhỏ)
@@ -123,4 +123,4 @@ Các pattern trên mô tả cách tìm dữ liệu cần thiết, không bảo �
 | Có hứa trả lời mọi câu chỉ nhờ graph không? | Không. Q1 cần nội dung định nghĩa; Q5 chưa có ngưỡng cấu trúc; Q4/Q6 cần chiến lược truy vấn phù hợp. Phải đọc câu trả lời thực tế, không chỉ dựa vào `--check`. |
 | Vì sao không tự thiết kế để lấy bonus ngay? | Cần baseline và bằng chứng trước–sau để chứng minh cải thiện. Đổi tên label hoặc tuyên bố giảm trùng mà chưa đo không đủ điều kiện bonus. |
 | Có lỗi nào đã chứng minh trên graph chưa? | Có. Báo cáo ghi E2 bỏ sót khoản luật và E3 trùng tên chất, có câu trả lời/Cypher và kết quả để đối chiếu. |
-| Thiết kế và code xong có nghĩa bài lab xong không? | Không. Checklist code và benchmark đã đạt, nhưng vẫn cần ba ảnh Browser và xác nhận nộp link trên vlearn. |
+| Thiết kế và code xong có nghĩa bài lab xong không? | Không. Checklist code và benchmark đã đạt, ba ảnh đã có nhưng cần kiểm tra quy cách; thao tác nộp link trên vlearn chưa được xác nhận. |

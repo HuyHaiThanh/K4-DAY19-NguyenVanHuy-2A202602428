@@ -47,7 +47,7 @@ Judge có thang 0 sai, 1 một phần, 2 đúng.
 
 ## 3. Phân tích lỗi (20 điểm)
 
-Cypher và kết quả thật lưu trong [kg_evidence.json](kg_evidence.json). Tái lấy bằng `python scripts/inspect_kg.py` (chỉ đọc graph). `contexts_without_vector` dùng doc_ids rỗng để cô lập graph retrieval, không phải toàn bộ prompt đã dùng trong benchmark.
+Các Cypher và kết quả kiểm chứng cần thiết được ghi trực tiếp bên dưới. Kiểm tra context bổ sung dùng doc_ids rỗng để cô lập graph retrieval, không phải toàn bộ prompt đã dùng trong benchmark.
 
 ### Lỗi E2: Sai khung tối đa dù graph có khoản luật
 
@@ -63,7 +63,7 @@ RETURN a.id AS article, cl.number AS number, cl.penalty AS penalty, cl.text AS t
 ORDER BY number;
 ```
 
-Kết quả snapshot: khoản 1 `phạt tù từ 02 năm đến 07 năm`; khoản 2 `phạt tù từ 07 năm đến 15 năm`; khoản 3 `phạt tù từ 15 năm đến 20 năm`; khoản 4 `phạt tù 20 năm hoặc tù chung thân`; khoản 5 hình phạt bổ sung. Khoản 4 thực sự có trong graph. Tái gọi `context(question_Q4, [])` trả khoản 1 Điều 255 nhưng không có khoản 4 (xem `contexts_without_vector.Q4`).
+Kết quả kiểm chứng: khoản 1 `phạt tù từ 02 năm đến 07 năm`; khoản 2 `phạt tù từ 07 năm đến 15 năm`; khoản 3 `phạt tù từ 15 năm đến 20 năm`; khoản 4 `phạt tù 20 năm hoặc tù chung thân`; khoản 5 hình phạt bổ sung. Khoản 4 thực sự có trong graph. Tái gọi `context(question_Q4, [])` trả khoản 1 Điều 255 nhưng không có khoản 4.
 
 - **Nguyên nhân:** KG-3 lọc khoản 1 hoặc khoản MENTIONS chất của vụ. Các khoản tăng nặng Điều 255 không nhắc chất cụ thể nên bị loại; LLM dùng trần khung cơ bản để trả khung tối đa. Snapshot không lưu chính xác prompt benchmark, nhưng điều kiện Cypher và tái truy xuất xác nhận cơ chế thiếu luật.
 - **Đề xuất sửa:** trong `src/graph.py`, khi hỏi tối đa/khung cao nhất, lấy mọi khoản hình phạt của Điều liên quan; hoặc mô hình hóa ngưỡng phạt số và cờ chung thân/tử hình. Đánh đổi: tăng token hoặc thêm công việc parsing và kiểm tra ngoại lệ. Phải benchmark lại sau sửa. Chưa sửa code trong lượt phân tích để giữ số liệu khớp code đã đo.
@@ -90,7 +90,7 @@ methamphetamine ['methamphetamine', 'Methamphetamine']  n=2
 
 ### Quan sát bổ sung
 
-Lần chạy cuối không có Case thiếu CHARGED_WITH (`broken_bridges.rows = []`). Không suy rằng mọi cạnh đều đúng vì linking có thể gán sai; charge rỗng ở cán bộ/người liên quan cũng không tự động là lỗi.
+Lần chạy cuối, `MATCH (k:Case) WHERE NOT (k)-[:CHARGED_WITH]->() RETURN k.name, k.doc_id` trả 0 bản ghi. Không suy rằng mọi cạnh đều đúng vì linking có thể gán sai; charge rỗng ở cán bộ/người liên quan cũng không tự động là lỗi.
 
 Q6 có năm node Case nối MDMA: vụ Lê Minh Thành, Sầm Sơn, Viện Pháp y tâm thần và hai tên vụ của Cái Quang Huy. Câu trả lời Graph chỉ có ba mô tả. Cần phân giải vụ trước khi coi số node là số vụ ngoài đời; không suy rằng cả năm node đều là vụ độc lập.
 
@@ -115,10 +115,10 @@ $ python bench_kg.py --check
 [OK] Chi phí check: 1 lần gọi LLM, $0.00078.
 ```
 
-Sau --check đã chạy lại --judge để dựng graph đầy đủ và sinh file cuối. Snapshot tổng 201 node và 380 cạnh, khớp benchmark. Không còn NotImplementedError trong src/graph.py; .env/.venv không được Git theo dõi, được gitignore; quét lịch sử không thấy chuỗi API key theo mẫu sk-/AIza đã kiểm tra.
+Sau --check đã chạy lại --judge để dựng graph đầy đủ và sinh file cuối. Kiểm tra tổng 201 node và 380 cạnh, khớp benchmark. Không còn NotImplementedError trong src/graph.py; .env/.venv không được Git theo dõi, được gitignore; quét lịch sử không thấy chuỗi API key theo mẫu sk-/AIza đã kiểm tra.
 
-**Ảnh chưa hoàn thành:** `report/img/kg_count.png`, `kg_cross_kb.png`, `kg_my_case.png` chưa được tạo. Người chọn **Cái Quang Huy**, snapshot xác nhận đường tới Điều 250. Xem [NEO4J_SCREENSHOTS.md](NEO4J_SCREENSHOTS.md) để chạy truy vấn và chụp.
+**Ba ảnh đã có:** [kg_count.png](img/kg_count.png), [kg_cross_kb.png](img/kg_cross_kb.png), [kg_my_case.png](img/kg_my_case.png). Người chọn **Cái Quang Huy**, đã kiểm chứng đường tới Điều 250. Ảnh count có 7 label, tổng 201 node. Ảnh graph thấy ô truy vấn và Results overview; ảnh hiện chỉ có khung kết quả Neo4j, chưa thấy toàn cửa sổ trình duyệt, và truy vấn ảnh vụ riêng bị rút gọn. Do đó chưa xác nhận đạt đầy đủ quy cách ảnh của LAB_GUIDE 8.2; cần chụp lại nếu người chấm yêu cầu đúng toàn cửa sổ.
 
 ## Vấn đề gặp phải (không tính điểm)
 
-`cua.getState()` trả `{"apps":[],"browsers":[]}`; thử mở Chrome tới trang nộp bài trả `Browser is not available: chrome`. Không có browser để chạy :clear/chụp ảnh hoặc nộp link ở `https://vlearn.dev/course/k04-l34-p2-t3/reader?day=D05&part=lab-634ab997-submit`. Không dùng ảnh mẫu hay ảnh mô phỏng. Cần kết nối browser hoặc thực hiện thủ công; chưa xác nhận nộp bài thành công.
+`cua.getState()` trả `{"apps":[],"browsers":[]}`; thử mở Chrome tới trang nộp bài trả `Browser is not available: chrome`. Ba ảnh người dùng cung cấp đã được đưa nguyên trạng vào repo. Không có browser để xác nhận thao tác nộp link tại `https://vlearn.dev/course/k04-l34-p2-t3/reader?day=D05&part=lab-634ab997-submit`; chưa xác nhận nộp bài thành công.
