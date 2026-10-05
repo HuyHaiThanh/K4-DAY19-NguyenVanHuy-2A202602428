@@ -2,6 +2,8 @@
 
 **Họ tên:** Nguyễn Văn Huy  **MSSV:** 2A202602428
 
+> Cập nhật sau thiết kế (2026-10-05): KG-1/KG-2 đã triển khai và kiểm chứng graph nhỏ trên Neo4j. Xem [KG_BUILD_REVIEW.md](KG_BUILD_REVIEW.md) để biết số liệu, cầu nối đã kiểm tra và lỗi trích xuất đã quan sát. Các ghi chú “chưa triển khai/chưa kiểm chứng” bên dưới mô tả thời điểm lập thiết kế; KG-3/KG-4 và benchmark hỏi đáp vẫn chưa hoàn thành.
+
 **Lựa chọn** (đánh dấu một):
 - [x] Dùng ontology gợi ý (có thể chỉnh nhỏ)
 - [ ] Tự thiết kế (xét bonus +15, xem `SUBMISSION.md`)

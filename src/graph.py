@@ -54,9 +54,18 @@ def normalize_crime(name: str) -> str:
 
 def link_entity(name: str, known: list[str], normalize: Callable[[str], str] = normalize_crime) -> str | None:
     """Map a free-text mention (e.g. a charge written by a journalist) onto one canonical name in `known`."""
-    # TODO KG-1: normalize both sides, exact match first, then difflib.get_close_matches(cutoff=0.8).
-    #            Return the ORIGINAL spelling from `known`; return None when nothing is close enough.
-    raise NotImplementedError("TODO KG-1 link_entity (src/graph.py) - kiểm tra: pytest tests/test_graph.py -k LinkEntity")
+    normalized = normalize(name)
+    if not normalized:
+        return None
+    candidates = {}
+    for original in known:
+        candidate = normalize(original)
+        if candidate == normalized:
+            return original
+        if candidate:
+            candidates.setdefault(candidate, original)
+    matches = difflib.get_close_matches(normalized, candidates, n=1, cutoff=0.8)
+    return candidates[matches[0]] if matches else None
 
 def find_substances(text: str) -> list[str]:
     lowered = text.lower()
@@ -269,11 +278,15 @@ class Neo4jGraph:
 def build_graph(graph: Neo4jGraph, law_docs: list[Document], news_docs: list[Document],
                 llm_fn: Callable[..., str]) -> None:
     """Load both KBs into an empty graph. llm_fn(prompt, json_mode=False) -> str (metered OpenAI chat)."""
-    # TODO KG-2: create YOUR ontology in Neo4j from both KBs.
-    #   Contract: every node created from one document has the property doc_id = Document.id.
-    #   Fastest start: the HINT helpers above (parse_law_article, extract_news_cases, suggested_constraints,
-    #   add_law_article, add_news_case). Own ontology + report/ONTOLOGY.md = bonus (SUBMISSION.md).
-    raise NotImplementedError("TODO KG-2 build_graph (src/graph.py) - kiểm tra: python bench_kg.py --build --limit 2")
+    graph.suggested_constraints()
+    articles = [parse_law_article(doc) for doc in law_docs]
+    for article in articles:
+        graph.add_law_article(article)
+    crimes = sorted({article["crime"] for article in articles if article["crime"]})
+    for doc in news_docs:
+        cases = extract_news_cases(doc, lambda prompt: llm_fn(prompt, json_mode=True), crimes)
+        for case in cases:
+            graph.add_news_case(case, doc)
 
 # ---------------------------------------------------------------------------------------------- KG-4
 
