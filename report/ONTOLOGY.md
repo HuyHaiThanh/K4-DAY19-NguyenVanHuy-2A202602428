@@ -2,6 +2,8 @@
 
 **Họ tên:** Nguyễn Văn Huy  **MSSV:** 2A202602428
 
+> Trạng thái mới nhất (2026-10-05): KG-1–KG-4 đã triển khai; toàn bộ 48 test pass và `--check` đủ 7 OK. Xem [KG_MULTIHOP_REVIEW.md](KG_MULTIHOP_REVIEW.md). Các ghi chú chưa triển khai bên dưới ghi nhận thời điểm thiết kế ban đầu; benchmark toàn corpus và báo cáo cuối chưa hoàn thành.
+
 > Cập nhật sau thiết kế (2026-10-05): KG-1/KG-2 đã triển khai và kiểm chứng graph nhỏ trên Neo4j. Xem [KG_BUILD_REVIEW.md](KG_BUILD_REVIEW.md) để biết số liệu, cầu nối đã kiểm tra và lỗi trích xuất đã quan sát. Các ghi chú “chưa triển khai/chưa kiểm chứng” bên dưới mô tả thời điểm lập thiết kế; KG-3/KG-4 và benchmark hỏi đáp vẫn chưa hoàn thành.
 
 **Lựa chọn** (đánh dấu một):
