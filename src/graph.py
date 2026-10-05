@@ -7,13 +7,12 @@ Contract (fixed — bench_kg.py and the tests rely on it):
     Neo4jGraph.context(question, doc_ids)         -> list[str] facts               (KG-3)
     GraphRAGAgent.answer(question, top_k)         -> str                           (KG-4)
 
-Everything else in this file is a HINT: one possible ontology (below). Use it as is, change it,
-or design your own — your own ontology + report/ONTOLOGY.md earns the bonus (see SUBMISSION.md).
-
-Suggested ontology (Crime is the bridge between the law KB and the news KB):
+Custom ontology: Crime bridges the KBs; PenaltyFrame encodes imprisonment severity
+and Substance names are canonicalized conservatively (see report/ONTOLOGY.md).
 
     (:Article {id, title, law, doc_id})-[:DEFINES]->(:Crime {name})
     (:Article)-[:HAS_CLAUSE]->(:Clause {id, number, penalty, text})-[:MENTIONS]->(:Substance {name})
+    (:Clause)-[:HAS_PENALTY]->(:PenaltyFrame {id, text, max_years, life, death, doc_id})
     (:Case {name, summary, date, doc_id})-[:CHARGED_WITH]->(:Crime)
     (:Case)-[:INVOLVES {amount}]->(:Substance)
     (:Case)-[:LOCATED_IN]->(:Location {name})
@@ -70,6 +69,24 @@ def link_entity(name: str, known: list[str], normalize: Callable[[str], str] = n
 def find_substances(text: str) -> list[str]:
     lowered = text.lower()
     return [name for name in SUBSTANCES if name.lower() in lowered]
+
+
+def canonical_substance(name: str) -> str:
+    """Conservative substance linking: exact normalized names, never fuzzy chemicals."""
+    cleaned = re.sub(r"\s+", " ", name.strip())
+    canonical = {item.casefold(): item for item in SUBSTANCES}
+    return canonical.get(cleaned.casefold(), cleaned.casefold())
+
+
+def penalty_frame(clause: dict) -> dict | None:
+    """Encode imprisonment only from the extracted penalty, not other numbers in a clause."""
+    text = clause["penalty"]
+    if "tù" not in text or "phạt tù" not in text:
+        return None
+    years = [int(value) for value in re.findall(r"(\d+)\s*năm", text)]
+    return {"id": clause["id"] + " hình phạt", "text": text,
+            "max_years": max(years) if years else None,
+            "life": "chung thân" in text, "death": "tử hình" in text}
 
 # ----------------------------------------------------------------------------------------------
 # HINT — suggested ontology: extraction helpers
@@ -209,11 +226,12 @@ class Neo4jGraph:
                          f"({e['b_label']}: {e['b_name']})")
         return seed_ids, facts
 
-    # ---------------------------------------------------------------- HINT — suggested ontology: writes
+    # ---------------------------------------------------------------- Custom ontology writes
 
     def suggested_constraints(self) -> None:
         for label, key in [("Article", "id"), ("Clause", "id"), ("Crime", "name"), ("Case", "name"),
-                           ("Substance", "name"), ("Person", "name"), ("Location", "name")]:
+                           ("Substance", "name"), ("Person", "name"), ("Location", "name"),
+                           ("PenaltyFrame", "id")]:
             self.run(f"CREATE CONSTRAINT IF NOT EXISTS FOR (n:{label}) REQUIRE n.{key} IS UNIQUE")
 
     def add_law_article(self, article: dict) -> None:
@@ -231,6 +249,18 @@ class Neo4jGraph:
             """,
             **article,
         )
+        for clause in article["clauses"]:
+            frame = penalty_frame(clause)
+            if frame is not None:
+                self.run(
+                    """
+                    MATCH (cl:Clause {id: $clause_id})
+                    MERGE (f:PenaltyFrame {id: $id})
+                    SET f.text = $text, f.max_years = $max_years,
+                        f.life = $life, f.death = $death, f.doc_id = $doc_id
+                    MERGE (cl)-[:HAS_PENALTY]->(f)
+                    """, clause_id=clause["id"], doc_id=article["doc_id"], **frame,
+                )
 
     def add_news_case(self, case: dict, doc: Document) -> None:
         self.run(
@@ -249,7 +279,8 @@ class Neo4jGraph:
             name=case.get("name") or doc.metadata.get("title", doc.id),
             summary=case.get("summary", ""), date=case.get("date", ""), location=case.get("location", ""),
             charges=case.get("charges", []), people=[p for p in case.get("people", []) if p.get("name")],
-            substances=[s for s in case.get("substances", []) if s.get("name")],
+            substances=[{**s, "name": canonical_substance(s["name"])}
+                        for s in case.get("substances", []) if s.get("name", "").strip()],
             doc_id=doc.id, title=doc.metadata.get("title", ""),
         )
 
@@ -270,16 +301,17 @@ class Neo4jGraph:
             """, ids=seed_ids,
         )
         case_ids = [case["id"] for case in cases]
+        highest = bool(re.search(r"tối đa|cao nhất|nặng nhất", question, re.IGNORECASE))
         clauses = self.run(
             """
             MATCH (k:Case)-[:CHARGED_WITH]->(:Crime)<-[:DEFINES]-(a:Article)-[:HAS_CLAUSE]->(cl:Clause)
             WHERE elementId(k) IN $ids
-              AND (cl.number = 1 OR EXISTS {
+              AND ($highest OR cl.number = 1 OR EXISTS {
                   MATCH (k)-[:INVOLVES]->(:Substance)<-[:MENTIONS]-(cl)
               })
             RETURN DISTINCT a.id AS article, a.title AS title, cl.number AS number, cl.text AS text
             ORDER BY article, number
-            """, ids=case_ids,
+            """, ids=case_ids, highest=highest,
         )
         article_numbers = re.findall(r"[Đđ]iều\s+(\d+)", question)
         if article_numbers:
@@ -287,18 +319,33 @@ class Neo4jGraph:
                 """
                 MATCH (a:Article)-[:HAS_CLAUSE]->(cl:Clause)
                 WHERE any(number IN $numbers WHERE a.id STARTS WITH 'Điều ' + number + ' ')
-                  AND (cl.number = 1 OR EXISTS {
+                  AND ($highest OR cl.number = 1 OR EXISTS {
                       MATCH (cl)-[:MENTIONS]->(s:Substance) WHERE s.name IN $substances
                   })
                 RETURN DISTINCT a.id AS article, a.title AS title, cl.number AS number, cl.text AS text
                 ORDER BY article, number
-                """, numbers=article_numbers, substances=find_substances(question),
+                """, numbers=article_numbers, substances=find_substances(question), highest=highest,
             )
+        penalty_facts = []
+        if highest:
+            frames = self.run(
+                """
+                MATCH (a:Article)-[:HAS_CLAUSE]->(cl:Clause)-[:HAS_PENALTY]->(f:PenaltyFrame)
+                WHERE a.id IN $articles
+                WITH a, cl, f
+                ORDER BY f.death DESC, f.life DESC, coalesce(f.max_years, 0) DESC, cl.number
+                WITH a, collect({number: cl.number, text: f.text, years: f.max_years,
+                                 life: f.life, death: f.death})[0] AS highest
+                RETURN a.id AS article, highest ORDER BY article
+                """, articles=sorted({row["article"] for row in clauses}),
+            )
+            penalty_facts = [f"[{row['article']}] Khung cao nhất (khoản {row['highest']['number']}): "
+                             f"{row['highest']['text']}" for row in frames]
         # Keep legal facts ahead of one-hop edges so the latter cannot fill the entire budget.
         expanded = [f"[{row['article']} - {row['title']}] khoản {row['number']}: {row['text']}"
                     for row in clauses]
         expanded += [f"Vụ việc '{case['name']}': {case['summary']}" for case in cases]
-        return list(dict.fromkeys(expanded + facts))[:max_facts]
+        return list(dict.fromkeys(penalty_facts + expanded + facts))[:max_facts]
 
 # ---------------------------------------------------------------------------------------------- KG-2
 

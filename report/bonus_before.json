@@ -1,0 +1,64 @@
+{
+  "stats": {
+    "cypher": "MATCH (n) RETURN count(n) AS nodes",
+    "rows": [
+      {
+        "nodes": 201
+      }
+    ]
+  },
+  "duplicates": {
+    "cypher": "MATCH (s:Substance) WITH toLower(s.name) AS normalized, collect(s.name) AS names, count(*) AS n WHERE n > 1 RETURN normalized, names, n ORDER BY normalized",
+    "rows": [
+      {
+        "normalized": "ketamine",
+        "names": [
+          "Ketamine",
+          "ketamine"
+        ],
+        "n": 2
+      },
+      {
+        "normalized": "methamphetamine",
+        "names": [
+          "methamphetamine",
+          "Methamphetamine"
+        ],
+        "n": 2
+      }
+    ]
+  },
+  "penalty_frames": {
+    "cypher": "MATCH (n:PenaltyFrame) RETURN count(n) AS n",
+    "rows": [
+      {
+        "n": 0
+      }
+    ]
+  },
+  "clauses255": {
+    "cypher": "MATCH (a:Article)-[:HAS_CLAUSE]->(c:Clause) WHERE a.doc_id='blhs-dieu-255' RETURN c.number AS number,c.penalty AS penalty ORDER BY number",
+    "rows": [
+      {
+        "number": 1,
+        "penalty": "phạt tù từ 02 năm đến 07 năm"
+      },
+      {
+        "number": 2,
+        "penalty": "phạt tù từ 07 năm đến 15 năm"
+      },
+      {
+        "number": 3,
+        "penalty": "phạt tù từ 15 năm đến 20 năm"
+      },
+      {
+        "number": 4,
+        "penalty": "phạt tù 20 năm hoặc tù chung thân"
+      },
+      {
+        "number": 5,
+        "penalty": "phạt tiền từ 50.000.000 đồng đến 500.000.000 đồng, phạt quản chế, cấm cư trú từ 01 năm đến 05 năm hoặc tịch thu một phần hoặc toàn bộ tài sản"
+      }
+    ]
+  }
+}
