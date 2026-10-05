@@ -99,4 +99,4 @@ Baseline tại commit 3c2c12c, file ket_qua_benchmark_kg.hint.txt là bản nguy
 - Ranking không xử lý hình phạt tù có điều kiện, lựa chọn phạt tiền, cải tạo hoặc tương tác nhiều tội. Parser chỉ tạo frame khi penalty có “phạt tù”; bỏ sót cấu trúc khác cần audit riêng.
 - Không hardcode đáp án gold; tests chỉ kiểm tra hợp đồng/domain parsing và các lỗi cần tránh, không sửa tests gốc hoặc benchmark.
 - Chưa có alias ngữ nghĩa cho chất, chưa gộp vụ/người đa nguồn, chưa giữ lịch sử tố tụng. Không tuyên bố Q6 đã giải quyết chỉ vì giảm trùng Substance.
-- Cần chụp lại ảnh count và graph luật có frame theo graph mới; ảnh baseline cũ không chứng minh số lượng/schema bonus hiện tại.
+- Đã thay ba ảnh bằng ảnh graph bonus: count có 246 node/44 PenaltyFrame; ảnh vụ riêng có Clause → HAS_PENALTY → PenaltyFrame. Giới hạn hiển thị truy vấn ảnh vụ riêng và trạng thái nộp link ghi trong REPORT_KG.md.

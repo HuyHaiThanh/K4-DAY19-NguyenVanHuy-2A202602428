@@ -157,7 +157,7 @@ $ python bench_kg.py --judge
 
 ## 7. Ảnh và trạng thái nộp bài
 
-Ba ảnh đang ở `img/kg_count.png`, `img/kg_cross_kb.png`, `img/kg_my_case.png` là ảnh baseline người dùng cung cấp, không phải graph mới. Count cũ tổng 201 nên **cần chụp lại cho bonus** (hiện 246). Chọn Cái Quang Huy cho vụ riêng. Công cụ vẫn báo `Browser is not available: edge`, chưa chụp được ảnh mới và chưa xác nhận nộp link trên vlearn.
+Ba ảnh bonus người dùng cung cấp đã được kiểm tra và lưu nguyên trạng: [kg_count.png](img/kg_count.png), [kg_cross_kb.png](img/kg_cross_kb.png), [kg_my_case.png](img/kg_my_case.png). Ảnh count đủ 8 label, tổng 246 node, gồm 44 PenaltyFrame; khớp benchmark và bằng chứng bonus. Ảnh cầu nối thấy Person, Case, Crime, Article cùng ba loại cạnh. Ảnh Cái Quang Huy có 15 node/14 cạnh trong kết quả, gồm 4 Clause và 4 PenaltyFrame, thể hiện HAS_PENALTY; đây là số của kết quả truy vấn, không phải toàn graph. Cả ba thấy cửa sổ trình duyệt, ô truy vấn; hai ảnh Graph có Results overview. Phần cuối truy vấn ảnh vụ riêng vẫn bị giao diện rút gọn; truy vấn đầy đủ được ghi bên dưới. Chưa xác nhận thao tác nộp link trên vlearn.
 
 Sau `:clear`, chụp cả cửa sổ, ô truy vấn đầy đủ, Graph và Results overview:
 
@@ -182,4 +182,4 @@ RETURN p,q,f;
 - PenaltyFrame thực sự thay đổi schema, không chỉ đổi tên; KG-3 thực sự dùng frame trong xếp hạng. Tests bảo vệ không nhầm số điều kiện và không biến chung thân thành năm.
 - Q4 sửa đúng nhưng không suy rằng người cụ thể đã bị tuyên khung cao nhất. Q5 có judge=2 vẫn thiếu Ketamine; thừa nhận giới hạn phép đo.
 - Hai lỗi baseline có bằng chứng và sửa; Q6 vẫn có lỗi cần tiếp tục nghiên cứu. Chưa làm bonus về ngưỡng khối lượng hoặc lịch sử tố tụng.
-- Ảnh baseline không được trình bày là ảnh bonus; chưa tuyên bố hoàn thành phần ảnh/nộp link.
+- Đã đối chiếu ảnh bonus với schema và số liệu graph mới; ghi nhận giới hạn phần cuối truy vấn bị rút gọn ở ảnh vụ riêng. Không xác nhận việc nộp link khi chưa có bằng chứng từ vlearn.
